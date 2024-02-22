@@ -6,6 +6,11 @@ class LoginWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle('Fruit Video Recognition - Login')
         self.setGeometry(100, 100, 400, 200)
+        
+        self.setStyleSheet("""
+            background-color: #262626;
+            color: #FFFFFF;
+            """)
 
         self.user_data = None
 
@@ -13,12 +18,25 @@ class LoginWindow(QMainWindow):
 
         self.email_entry = QLineEdit(self)
         self.email_entry.setPlaceholderText('name@example.com')
+        self.email_entry.setStyleSheet("""
+        background-color: #FFFFFF;
+        color: #262626
+        """)
 
         self.password_entry = QLineEdit(self)
         self.password_entry.setPlaceholderText('Password')
         self.password_entry.setEchoMode(QLineEdit.Password)
+        self.password_entry.setStyleSheet("""
+        background-color: #FFFFFF;
+        color: #262626
+        """)
+
 
         self.login_button = QPushButton('Login', self)
+        self.login_button.setStyleSheet("""
+        background-color: #FFFFFF;
+        color: #262626
+        """)
         self.login_button.clicked.connect(self.store_login)
 
         self.login_layout = QVBoxLayout()
