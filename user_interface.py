@@ -1,5 +1,7 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QStackedLayout
+from PySide6.QtGui import QPalette, QColor
+from video_capture import FrameAnalysis
 
 class LoginWindow(QMainWindow):
     def __init__(self):
@@ -61,12 +63,69 @@ class LoginWindow(QMainWindow):
             return None
         return self.user_data
 
+class EmptyWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setAutoFillBackground(True)
+        palette = self.palette()
+        palette.setColor(QPalette.Window, QColor('black'))
+
 class VideoWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Fruit Video Recognition - Video')
+        self.setGeometry(100, 100, 800, 400)
+
+        self.setStyleSheet("""
+            background-color: #262626;
+            color: #FFFFFF;
+            """)
 
         # Layout to input a video file
 
         self.file_entry = QLineEdit(self)
         self.file_entry.setPlaceholderText('Example.avi')
+        self.file_entry.setStyleSheet("""
+        background-color: #FFFFFF;
+        color: #262626
+        """)
+
+        self.file_button = QPushButton('Enter video', self)
+        self.file_button.clicked.connect(self.set_video_file)
+        self.file_button.setStyleSheet("""
+        background-color: #FFFFFF;
+        color: #262626
+        """)
+
+        self.video_display = EmptyWindow()
+        self.fruits_display = EmptyWindow()
+
+        video_layout = QHBoxLayout()
+        video_layout.addWidget(self.video_display)
+        video_layout.addWidget(self.fruits_display)
+
+        layout = QVBoxLayout()
+
+        layout.addLayout(video_layout)
+        layout.addWidget(self.file_entry)
+        layout.addWidget(self.file_button)
+
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
+
+        # Variable to store video file name
+        self.video_file = None
+
+    def set_video_file(self):
+        if len(self.file_entry.text()) > 0:
+            self.video_file = self.file_entry.text()
+
+    def play_video(self):
+        pass
+
+    def pause_video(self):
+        pass
+
+    def restart_video(self):
+        pass
