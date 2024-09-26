@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QWidget, QVBo
 from PySide6.QtGui import QPalette, QColor
 from video_capture import FrameAnalysis
 
+'''
 class LoginWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -62,6 +63,7 @@ class LoginWindow(QMainWindow):
         if not self.user_data[0] or not self.user_data[1]:
             return None
         return self.user_data
+'''
 
 class EmptyWindow(QWidget):
     def __init__(self):
@@ -128,4 +130,31 @@ class VideoWindow(QMainWindow):
         pass
 
     def restart_video(self):
+        pass
+
+class StartWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('Fruit Video Recognition')
+        self.setGeometry(100, 100, 400, 200)
+        
+        self.setStyleSheet("""
+            background-color: #262626;
+            color: #FFFFFF;
+            """)
+        
+        self.start_button = QPushButton('Start', self)
+        self.start_button.setStyleSheet("""
+        background-color: #FFFFFF;
+        color: #262626
+        """)
+
+        self.start_layout = QVBoxLayout()
+        self.start_layout.addWidget(self.start_button)
+
+        self.central_widget = QWidget()
+        self.central_widget.setLayout(self.start_layout)
+        self.setCentralWidget(self.central_widget)
+
+    def start_clicked(self):
         pass

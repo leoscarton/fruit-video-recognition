@@ -5,6 +5,6 @@ import sys
 from PySide6.QtWidgets import QApplication
 
 app = QApplication(sys.argv)
-video_window = user_interface.VideoWindow()
-video_window.show()
+s_window = user_interface.StartWindow()
+s_window.show()
 app.exec()
