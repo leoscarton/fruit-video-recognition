@@ -1,2 +1,2 @@
-__pycache__/user_interface.cpython-312.pyc
-__pycache__/video_capture.cpython-312.pyc
+__pycache__/*.pyc
+__pycache__
