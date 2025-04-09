@@ -75,7 +75,7 @@ class EmptyWindow(QWidget):
 class VideoWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Fruit Video Recognition - Video')
+        self.setWindowTitle('Fruit Video Recognition by Leonardo Scarton - Video')
         self.setGeometry(100, 100, 800, 400)
 
         self.setStyleSheet("""
@@ -135,7 +135,7 @@ class VideoWindow(QMainWindow):
 class StartWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Fruit Video Recognition')
+        self.setWindowTitle('Fruit Video Recognition by Leonardo Scarton')
         self.setGeometry(100, 100, 400, 200)
         
         self.setStyleSheet("""
