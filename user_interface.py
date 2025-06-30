@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QStackedLayout, QMessageBox
 from PySide6.QtGui import QPalette, QColor, QImage, QPixmap
 from video_capture import FrameAnalysis
@@ -118,6 +118,10 @@ class VideoWindow(QMainWindow):
         """)
         self.pause_button.clicked.connect(self.pause_video)
 
+        self.is_paused = False
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.play_video)
+
         self.restart_button = QPushButton('Restart', self)
         self.restart_button.setStyleSheet("""
         background-color: #000000;
@@ -162,7 +166,7 @@ class VideoWindow(QMainWindow):
                     msg.setText(f"Video file '{self.video_file}' loaded successfully.")
                     msg.exec()
 
-                    self.set_button_colot(video_in=True)
+                    self.set_button_color(video_in=True)
 
                     return self.frame_capture
                 else:
@@ -174,7 +178,7 @@ class VideoWindow(QMainWindow):
                 msg.setText(str(e))
                 msg.exec()
 
-                self.set_button_colot(video_in=False)
+                self.set_button_color(video_in=False)
 
                 return None
         else:
@@ -186,18 +190,18 @@ class VideoWindow(QMainWindow):
             return None
 
     def play_video(self):
-        if self.frame_capture:
-            while True:
-                frame = self.frame_capture.return_frame()
-                if frame is None:
-                    break
-                # Convert the frame to RGB format for display
-                frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                # Display the frame in the video_display widget
-                h, w, ch = frame_rgb.shape
-                bytes_per_line = ch * w
-                q_img = QImage(frame_rgb.data, w, h, bytes_per_line, QImage.Format_RGB888)
-                #self.video_display.setPixmap(QPixmap.fromImage(q_img))
+        self.is_paused = False
+        self.timer.start(1000 // 60)  # Assuming 30 FPS, adjust as needed
+        if not self.is_paused and self.frame_capture:
+            frame = self.frame_capture.return_frame()
+            if frame is None:
+                self.timer.stop()
+                return
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            h, w, ch = frame_rgb.shape
+            bytes_per_line = ch * w
+            q_img = QImage(frame_rgb.data, w, h, bytes_per_line, QImage.Format_RGB888)
+            # Display q_img in your QLabel or widget
 
     def pause_video(self):
         pass
@@ -205,7 +209,7 @@ class VideoWindow(QMainWindow):
     def restart_video(self):
         pass
 
-    def set_button_colot(self, video_in:False):
+    def set_button_color(self, video_in:False):
         if video_in:
             self.play_button.setStyleSheet("""
             background-color: #FFFFFF;

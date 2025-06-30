@@ -3,7 +3,9 @@ import cv2
 class FrameAnalysis():
     def __init__(self):
         #self.video_file = None
-        self.supported_types = ['.avi', '.mp4']
+        self.supported_types = ['.avi', '.mp4', '.mov']
+        uppercase_types = [type.upper() for type in self.supported_types]
+        self.supported_types.extend(uppercase_types)
         self.video_capture = None
 
     def test_video_capture(self):
