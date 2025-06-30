@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QStackedLayout, QMessageBox
-from PySide6.QtGui import QPalette, QColor
+from PySide6.QtGui import QPalette, QColor, QImage, QPixmap
 from video_capture import FrameAnalysis
 import cv2
 
@@ -84,6 +84,10 @@ class VideoWindow(QMainWindow):
             color: #FFFFFF;
             """)
 
+        # Variables to store video file name and FrameAnalysis() object
+        self.video_file = None
+        self.frame_capture = None
+
         # Layout to input a video file
 
         self.file_entry = QLineEdit(self)
@@ -101,12 +105,24 @@ class VideoWindow(QMainWindow):
         """)
 
         self.play_button = QPushButton('Play', self)
+        self.play_button.setStyleSheet("""
+        background-color: #000000;
+        color: #FFFFFF
+        """)
         self.play_button.clicked.connect(self.play_video)
 
         self.pause_button = QPushButton('Pause', self)
+        self.pause_button.setStyleSheet("""
+        background-color: #000000;
+        color: #FFFFFF
+        """)
         self.pause_button.clicked.connect(self.pause_video)
 
         self.restart_button = QPushButton('Restart', self)
+        self.restart_button.setStyleSheet("""
+        background-color: #000000;
+        color: #FFFFFF
+        """)
         self.restart_button.clicked.connect(self.restart_video)
 
         self.video_display = EmptyWindow()
@@ -116,18 +132,21 @@ class VideoWindow(QMainWindow):
         video_layout.addWidget(self.video_display)
         video_layout.addWidget(self.fruits_display)
 
+        video_button_layout = QHBoxLayout()
+        video_button_layout.addWidget(self.play_button)
+        video_button_layout.addWidget(self.pause_button)
+        video_button_layout.addWidget(self.restart_button)
+
         layout = QVBoxLayout()
 
         layout.addLayout(video_layout)
+        layout.addLayout(video_button_layout)
         layout.addWidget(self.file_entry)
         layout.addWidget(self.file_button)
 
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-
-        # Variable to store video file name
-        self.video_file = None
 
     def set_video_file(self):
         if len(self.file_entry.text()) > 0:
@@ -142,6 +161,10 @@ class VideoWindow(QMainWindow):
                     msg.setWindowTitle("Success")
                     msg.setText(f"Video file '{self.video_file}' loaded successfully.")
                     msg.exec()
+
+                    self.set_button_colot(video_in=True)
+
+                    return self.frame_capture
                 else:
                     raise AssertionError("Video file could not be opened or is empty.")
             except AssertionError as e:
@@ -150,21 +173,65 @@ class VideoWindow(QMainWindow):
                 msg.setWindowTitle("Error")
                 msg.setText(str(e))
                 msg.exec()
+
+                self.set_button_colot(video_in=False)
+
+                return None
         else:
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Warning)
             msg.setWindowTitle("Input Error")
             msg.setText("Please enter a video file name.")
             msg.exec()
+            return None
 
     def play_video(self):
-        pass
+        if self.frame_capture:
+            while True:
+                frame = self.frame_capture.return_frame()
+                if frame is None:
+                    break
+                # Convert the frame to RGB format for display
+                frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                # Display the frame in the video_display widget
+                h, w, ch = frame_rgb.shape
+                bytes_per_line = ch * w
+                q_img = QImage(frame_rgb.data, w, h, bytes_per_line, QImage.Format_RGB888)
+                self.video_display.setPixmap(QPixmap.fromImage(q_img))
 
     def pause_video(self):
         pass
 
     def restart_video(self):
         pass
+
+    def set_button_colot(self, video_in:False):
+        if video_in:
+            self.play_button.setStyleSheet("""
+            background-color: #FFFFFF;
+            color: #262626
+            """)
+            self.pause_button.setStyleSheet("""
+            background-color: #FFFFFF;
+            color: #262626
+            """)
+            self.restart_button.setStyleSheet("""
+            background-color: #FFFFFF;
+            color: #262626
+            """)
+        else:
+            self.play_button.setStyleSheet("""
+            background-color: #000000;
+            color: #FFFFFF
+            """)
+            self.pause_button.setStyleSheet("""
+            background-color: #000000;
+            color: #FFFFFF
+            """)
+            self.restart_button.setStyleSheet("""
+            background-color: #000000;
+            color: #FFFFFF
+            """)
 
 class StartWindow(QMainWindow):
     def __init__(self):
