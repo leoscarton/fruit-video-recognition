@@ -1,7 +1,8 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QStackedLayout
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QStackedLayout, QMessageBox
 from PySide6.QtGui import QPalette, QColor
 from video_capture import FrameAnalysis
+import cv2
 
 '''
 class LoginWindow(QMainWindow):
@@ -99,6 +100,15 @@ class VideoWindow(QMainWindow):
         color: #262626
         """)
 
+        self.play_button = QPushButton('Play', self)
+        self.play_button.clicked.connect(self.play_video)
+
+        self.pause_button = QPushButton('Pause', self)
+        self.pause_button.clicked.connect(self.pause_video)
+
+        self.restart_button = QPushButton('Restart', self)
+        self.restart_button.clicked.connect(self.restart_video)
+
         self.video_display = EmptyWindow()
         self.fruits_display = EmptyWindow()
 
@@ -122,6 +132,30 @@ class VideoWindow(QMainWindow):
     def set_video_file(self):
         if len(self.file_entry.text()) > 0:
             self.video_file = self.file_entry.text()
+            self.frame_capture = FrameAnalysis()
+            try:
+                self.frame_capture.insert_video_file(self.video_file)
+                self.file_entry.setText('')
+                if self.frame_capture.test_video_capture():
+                    msg = QMessageBox(self)
+                    msg.setIcon(QMessageBox.Information)
+                    msg.setWindowTitle("Success")
+                    msg.setText(f"Video file '{self.video_file}' loaded successfully.")
+                    msg.exec()
+                else:
+                    raise AssertionError("Video file could not be opened or is empty.")
+            except AssertionError as e:
+                msg = QMessageBox(self)
+                msg.setIcon(QMessageBox.Warning)
+                msg.setWindowTitle("Error")
+                msg.setText(str(e))
+                msg.exec()
+        else:
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Input Error")
+            msg.setText("Please enter a video file name.")
+            msg.exec()
 
     def play_video(self):
         pass
@@ -148,6 +182,7 @@ class StartWindow(QMainWindow):
         background-color: #FFFFFF;
         color: #262626
         """)
+        self.start_button.clicked.connect(self.start_clicked)
 
         self.start_layout = QVBoxLayout()
         self.start_layout.addWidget(self.start_button)
@@ -157,4 +192,6 @@ class StartWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
     def start_clicked(self):
-        pass
+        self.video_window = VideoWindow()
+        self.video_window.show()
+        self.hide()
