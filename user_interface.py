@@ -197,7 +197,7 @@ class VideoWindow(QMainWindow):
                 h, w, ch = frame_rgb.shape
                 bytes_per_line = ch * w
                 q_img = QImage(frame_rgb.data, w, h, bytes_per_line, QImage.Format_RGB888)
-                self.video_display.setPixmap(QPixmap.fromImage(q_img))
+                #self.video_display.setPixmap(QPixmap.fromImage(q_img))
 
     def pause_video(self):
         pass
