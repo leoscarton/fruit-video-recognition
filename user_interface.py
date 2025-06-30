@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QStackedLayout, QMessageBox
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QStackedLayout, QMessageBox, QLabel
 from PySide6.QtGui import QPalette, QColor, QImage, QPixmap
 from video_capture import FrameAnalysis
 import cv2
@@ -73,6 +73,23 @@ class EmptyWindow(QWidget):
         palette = self.palette()
         palette.setColor(QPalette.Window, QColor('black'))
 
+class VideoDisplayWindow(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setGeometry(100, 100, 400, 400)
+        self.label = QLabel(self)
+        self.label.setAlignment(Qt.AlignCenter)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.label)
+        self.setLayout(layout)
+
+    def set_image(self, q_img):
+        pixmap = QPixmap.fromImage(q_img)
+        scaled_pixmap = pixmap.scaled(
+            self.label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+        )
+        self.label.setPixmap(scaled_pixmap)
+
 class VideoWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -120,7 +137,7 @@ class VideoWindow(QMainWindow):
 
         self.is_paused = False
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self.play_video)
+        self.timer.timeout.connect(self.update_frame)
 
         self.restart_button = QPushButton('Restart', self)
         self.restart_button.setStyleSheet("""
@@ -129,7 +146,7 @@ class VideoWindow(QMainWindow):
         """)
         self.restart_button.clicked.connect(self.restart_video)
 
-        self.video_display = EmptyWindow()
+        self.video_display = VideoDisplayWindow()
         self.fruits_display = EmptyWindow()
 
         video_layout = QHBoxLayout()
@@ -167,8 +184,6 @@ class VideoWindow(QMainWindow):
                     msg.exec()
 
                     self.set_button_color(video_in=True)
-
-                    return self.frame_capture
                 else:
                     raise AssertionError("Video file could not be opened or is empty.")
             except AssertionError as e:
@@ -179,31 +194,35 @@ class VideoWindow(QMainWindow):
                 msg.exec()
 
                 self.set_button_color(video_in=False)
-
-                return None
         else:
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Warning)
             msg.setWindowTitle("Input Error")
             msg.setText("Please enter a video file name.")
             msg.exec()
-            return None
 
     def play_video(self):
         self.is_paused = False
-        self.timer.start(1000 // 60)  # Assuming 30 FPS, adjust as needed
-        if not self.is_paused and self.frame_capture:
-            frame = self.frame_capture.return_frame()
-            if frame is None:
-                self.timer.stop()
-                return
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            h, w, ch = frame_rgb.shape
-            bytes_per_line = ch * w
-            q_img = QImage(frame_rgb.data, w, h, bytes_per_line, QImage.Format_RGB888)
-            # Display q_img in your QLabel or widget
+        if not self.timer.isActive():
+            fps = self.frame_capture.get_fps()
+            self.timer.start(1000 // fps)
+
+    def update_frame(self):
+        if self.is_paused or not self.frame_capture:
+            return        
+        frame = self.frame_capture.return_frame()
+        if frame is None:
+        #    self.timer.stop()
+            return
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        h, w, ch = frame_rgb.shape
+        bytes_per_line = ch * w
+        q_img = QImage(frame_rgb.data, w, h, bytes_per_line, QImage.Format_RGB888)
+        self.video_display.set_image(q_img)
 
     def pause_video(self):
+        self.is_paused = True
+        self.timer.stop()
         pass
 
     def restart_video(self):
