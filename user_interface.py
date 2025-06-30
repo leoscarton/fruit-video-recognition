@@ -4,68 +4,6 @@ from PySide6.QtGui import QPalette, QColor, QImage, QPixmap
 from video_capture import FrameAnalysis
 import cv2
 
-'''
-class LoginWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle('Fruit Video Recognition - Login')
-        self.setGeometry(100, 100, 400, 200)
-        
-        self.setStyleSheet("""
-            background-color: #262626;
-            color: #FFFFFF;
-            """)
-
-        self.user_data = None
-
-        # Login layout
-
-        self.email_entry = QLineEdit(self)
-        self.email_entry.setPlaceholderText('name@example.com')
-        self.email_entry.setStyleSheet("""
-        background-color: #FFFFFF;
-        color: #262626
-        """)
-
-        self.password_entry = QLineEdit(self)
-        self.password_entry.setPlaceholderText('Password')
-        self.password_entry.setEchoMode(QLineEdit.Password)
-        self.password_entry.setStyleSheet("""
-        background-color: #FFFFFF;
-        color: #262626
-        """)
-
-
-        self.login_button = QPushButton('Login', self)
-        self.login_button.setStyleSheet("""
-        background-color: #FFFFFF;
-        color: #262626
-        """)
-        self.login_button.clicked.connect(self.store_login)
-
-        self.login_layout = QVBoxLayout()
-        self.login_layout.addWidget(self.email_entry)
-        self.login_layout.addWidget(self.password_entry)
-        self.login_layout.addWidget(self.login_button)
-
-        self.central_widget = QWidget()
-        self.central_widget.setLayout(self.login_layout)
-        self.setCentralWidget(self.central_widget)
-
-    def store_login(self):
-        email = self.email_entry.text()
-        password = self.password_entry.text()
-        assert (len(email) > 0) and (len(password) > 0), 'Empty email or password'
-        self.user_data = (email, password)
-
-    def retrieve_user_data(self):
-        if not self.user_data:
-            return None
-        if not self.user_data[0] or not self.user_data[1]:
-            return None
-        return self.user_data
-'''
-
 class EmptyWindow(QWidget):
     def __init__(self):
         super().__init__()
