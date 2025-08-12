@@ -1,7 +1,9 @@
 import cv2
+import os
 
 # videos_teste/IMG_0612.MOV
 
+# FrameAnalysis class handles video file input and frame capture
 class FrameAnalysis():
     def __init__(self):
         #self.video_file = None
@@ -32,8 +34,12 @@ class FrameAnalysis():
     # It checks if the file type is supported
     def insert_video_file(self, file:str):
         # Check if the file type is supported
-        # If not, it raises an assertion error
-        assert file[-4:] in self.supported_types, 'File type not supported'
+        # If not, it raises an error
+        ext = os.path.splitext(file)[1].lower()
+        if ext not in [e for e in self.supported_types]:
+            raise ValueError('File type not supported')
+
+        #assert file[-4:] in self.supported_types, 'File type not supported'
         
         # Open the video file using OpenCV
         # It sets the video capture object to the opened file
@@ -48,15 +54,22 @@ class FrameAnalysis():
     # Method to get the frames per second (fps) of the video capture object
     # It asserts that the video capture object is not None
     def get_fps(self):
-        assert self.video_capture, 'No video to capture'
-        return self.fps
+        #assert self.video_capture, 'No video to capture'
+        if not self.video_capture:
+            raise ValueError('No video to capture')
+        else:
+            return self.fps
     
     # Method to return the current frame from the video capture object
     # It reads a frame from the video capture object
     def return_frame(self):
-        assert self.video_capture, 'No video to capture'
-        ret, frame = self.video_capture.read()
-        if not ret:
-            return None
+        #assert self.video_capture, 'No video to capture'
+
+        if not self.video_capture:
+            raise ValueError('No video to capture')
         else:
-            return frame
+            ret, frame = self.video_capture.read()
+            if not ret:
+                return None
+            else:
+                return frame
