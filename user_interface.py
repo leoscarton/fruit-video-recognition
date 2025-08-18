@@ -20,7 +20,7 @@ class VideoDisplayWindow(QWidget):
         # Initializing window dimensions
         self.setGeometry(100, 100, 400, 400)
 
-        #
+        
         self.label = QLabel(self)
         self.label.setAlignment(Qt.AlignCenter)
         layout = QVBoxLayout(self)
@@ -41,7 +41,7 @@ class VideoWindow(QMainWindow):
         super().__init__()
         # Setting the window title and dimensions
         self.setWindowTitle('Fruit Video Recognition by Leonardo Scarton - Video')
-        self.setGeometry(100, 100, 800, 400)
+        self.setGeometry(100, 100, 900, 500)
 
         # Setting the background color and text color
         self.setStyleSheet("""
