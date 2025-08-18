@@ -293,9 +293,12 @@ class VideoWindow(QMainWindow):
         if not self.is_paused and self.frame_capture:
             self.fruits_display.set_text(text="In this frame, there are:")
     
-    def refresh_fruit_count(self):
+    def refresh_fruit_count(self, fruit_counts:dict):
         if not self.is_paused and self.frame_capture:
-            pass
+            self.start_fruit_count()
+            for fruit, count in fruit_counts.items():
+                self.fruits_display.append_text(f"- {fruit}: {count}")
+
 
 # Class to create the initial window with a start button
 # When the start button is clicked, it will open the VideoWindow
