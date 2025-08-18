@@ -12,13 +12,55 @@ class EmptyWindow(QWidget):
         palette = self.palette()
         palette.setColor(QPalette.Window, QColor('black'))
 
+class FruitCountWindow(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Fruit Count')
+        self.setGeometry(0, 0, 400, 400)
+        self.setStyleSheet("""
+            background-color: #1e1e1e;
+            color: #FFFFFF;
+            border: 1px solid #FFFFFF;
+            border-radius: 4px;
+        """)
+        self.setMinimumWidth(220)
+        self.setMaximumWidth(280)
+
+        # Label to display the text provided by fruit_cv_model.py
+        # It will be updated with the detected fruit counts
+        self.label = QLabel(self)
+        self.label.setStyleSheet("color: #FFFFFF;")
+        self.label.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+        self.label.setWordWrap(True)
+        self.label.setContentsMargins(8, 8, 8, 8)
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.label)
+        self.setLayout(layout)
+
+    def set_text(self, text: str):
+        # Replace the displayed text (call from fruit_cv_model.py)
+        self.label.setText(text)
+
+    def append_text(self, text: str):
+        # Append text to current content
+        current = self.label.text()
+        if current:
+            self.label.setText(current + "\n" + text)
+        else:
+            self.label.setText(text)
+
+    def clear(self):
+        # Clear the displayed text
+        self.label.clear()
+
 # Class to display the video frames
 class VideoDisplayWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
         # Initializing window dimensions
-        self.setGeometry(100, 100, 400, 400)
+        self.setGeometry(0, 0, 400, 400)
 
         
         self.label = QLabel(self)
@@ -108,7 +150,7 @@ class VideoWindow(QMainWindow):
         # Video display will show the video frames
         self.video_display = VideoDisplayWindow()
         # Fruits display will show the detected fruits (currently an empty window as placeholder)
-        self.fruits_display = EmptyWindow()
+        self.fruits_display = FruitCountWindow()
 
         video_layout = QHBoxLayout()
         video_layout.addWidget(self.video_display)
@@ -245,6 +287,14 @@ class VideoWindow(QMainWindow):
             background-color: #000000;
             color: #FFFFFF
             """)
+
+    def start_fruit_count(self):
+        if not self.is_paused and self.frame_capture:
+            self.fruits_display.set_text("In this frame, there are:")
+    
+    def refresh_fruit_count(self):
+        if not self.is_paused and self.frame_capture:
+            pass
 
 # Class to create the initial window with a start button
 # When the start button is clicked, it will open the VideoWindow
