@@ -133,7 +133,7 @@ class VideoWindow(QMainWindow):
         """)
         self.pause_button.clicked.connect(self.pause_video)
 
-        self.is_paused = False
+        self.is_paused = True
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
 
@@ -222,6 +222,7 @@ class VideoWindow(QMainWindow):
         if not self.timer.isActive():
             fps = self.frame_capture.get_fps()
             self.timer.start(1000 // fps)
+        self.start_fruit_count()
 
     # Method to update the video frame
     # It retrieves the current frame from the FrameAnalysis object and updates the video display
@@ -290,7 +291,7 @@ class VideoWindow(QMainWindow):
 
     def start_fruit_count(self):
         if not self.is_paused and self.frame_capture:
-            self.fruits_display.set_text("In this frame, there are:")
+            self.fruits_display.set_text(text="In this frame, there are:")
     
     def refresh_fruit_count(self):
         if not self.is_paused and self.frame_capture:
