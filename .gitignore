@@ -2,3 +2,6 @@ __pycache__/*.pyc
 __pycache__
 videos_teste
 videos_teste/
+fruit_video_recognition
+fruit_video_recognition/
+keras_test.py
