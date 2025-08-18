@@ -8,6 +8,14 @@ import pandas as pd
 # It will use the video_capture module to capture frames from a video file
 # To be implemented
 
+def get_dataset(dataset):
+    pass
+
+class CVModelCreator():
+    def __init__(self):
+        self.cv_model = None
+        self.dataset = None
+
 # Placeholder name
 class Mailman():
     def __init__(self):
