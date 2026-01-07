@@ -23,3 +23,5 @@ Will most likely be using PyTorch/TorchVision but the decision is not final.
 -------------------------------------------------------------------------------------
 
 Further details will be announced soon.
+
+CURRENT COMMIT CRASHING ON LAUNCH BECAUSE OF NUMPY ON PYTHON 3.14.2! Currently working on that.
