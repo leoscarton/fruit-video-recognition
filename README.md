@@ -18,7 +18,7 @@ Contains the basic functions for video file and frames manipulation, discounting
 ## fruit_cv_model.py
 
 Handles the creation (training, validation and testing) and deployment of the machine learning model to be used by the other files.
-Will probably be using PyTorch but not sure at the moment.
+Will most likely be using PyTorch/TorchVision but the decision is not final.
 
 -------------------------------------------------------------------------------------
 
